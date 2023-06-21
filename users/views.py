@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
+from admindashboard.permissions import is_admin
+
 
 def home(request):
     return render(request,"users/home.html")
@@ -28,12 +30,16 @@ def signup(request):
             messages.success(request,f"User logged in {request.user}")
         else:
             messages.error(request, "Invalid Credentials")
-        
-    return render(request,"users/signup.html",{
-        'form':form,
-    })
+            
+    print(request.user)
+    if not request.user.is_anonymous:
+        if is_admin(request.user):
+            return redirect('admin-dashboard')
+        return redirect('home-page')
+    
+    return render(request,"users/signup.html")
 
 
 def user_logout(request):
     logout(request)
-    return redirect('/')
+    return redirect('home-page')

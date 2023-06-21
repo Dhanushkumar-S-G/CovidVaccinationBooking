@@ -75,9 +75,11 @@
         </ul>
         <i class="bi bi-list mobile-nav-toggle d-none"></i>
       </nav><!-- .navbar -->
-
+      {% if user.is_authenticated %}
+      <a class="btn-getstarted scrollto" href="{% url 'logout' %}">Logout</a>
+      {% else %}
       <a class="btn-getstarted scrollto" href="{% url 'signup' %}">Signup/Login</a>
-
+      {% endif %}
     </div>
      
     <!-- End Django messages -->   
