@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     #user installed apps
     'users',
     'admindashboard',
+    'api',
+
+    
     'social_django',
     'crispy_forms',
     'crispy_bootstrap4',
