@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'users',
     'admindashboard',
     'social_django',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -168,3 +170,13 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
+
+#crispy forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+
+#timezone
+TIME_ZONE = 'Asia/Kolkata'
+USE_TZ = True

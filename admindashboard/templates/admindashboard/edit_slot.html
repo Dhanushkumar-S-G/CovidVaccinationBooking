@@ -1,0 +1,36 @@
+{% extends "admindashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+Slots - Edit
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Update Slot</h5>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <br> 
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}  
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#slots').DataTable();
+    });
+</script>
+{% endblock%}

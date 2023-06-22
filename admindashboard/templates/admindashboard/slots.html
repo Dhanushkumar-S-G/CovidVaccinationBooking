@@ -1,0 +1,71 @@
+{% extends "admindashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+Slots - Creation
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block content %}
+<div class="flex_container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Create Slots</h5>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <br> 
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Slots Available</h5>
+
+              <!-- Table with stripped rows -->
+              <table class="table table-striped table-bordered m-3" id="slots">
+                <thead>
+                  <tr>
+                    <th scope="col">No.</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Location Name</th>
+                    <th scope="col">From Time</th>
+                    <th scope="col">To Time</th>
+                    <th scope="col">Edit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for slot in available_slots %}
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ slot.name }}</td>
+                    <td>{{ slot.location }}</td>
+                    <td>{{ slot.from_time }}</td>
+                    <td>{{ slot.to_time }}</td>
+                    <td><a href="{% url 'edit-slot' slot.id %}"><i class="bx bxs-edit-alt"></i></a></td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+{% endblock %}  
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#slots').DataTable();
+    });
+</script>
+{% endblock%}

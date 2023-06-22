@@ -4,28 +4,34 @@ from django.contrib.auth.models import User
 from users.models import Vaccinator
 
 
-class Slot(models.Model):
-    from_time = models.TimeField()
-    to_time = models.TimeField()
 
 
 class Medicine(models.Model):
     name = models.CharField(max_length=50)
     made_by = models.CharField(max_length=50)
 
+    def __str__(self) -> str:
+        return self.name
+
 class Location(models.Model):
     name = models.CharField(max_length=50)
     pincode = models.CharField(max_length=6)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
-    regular_working_slots = models.ManyToManyField(Slot)
     regular_available_medicines = models.ManyToManyField(Medicine)
+
+    def __str__(self) -> str:
+        return f'{self.name} - {self.pincode}' 
      
 
-    def clean(self):
-        super().clean()
-        if self.regular_working_slots.count() > 10:
-            raise ValidationError("You can select a maximum of 10 slots for regular working.")
+class Slot(models.Model):
+    name = models.CharField(max_length=50,null=True,blank=True)
+    location = models.ForeignKey(Location,related_name='related_slots',on_delete=models.CASCADE,null=True)
+    from_time = models.TimeField()
+    to_time = models.TimeField()
+
+    def __str__(self) -> str:
+        return f'{self.name} - {self.from_time} to {self.to_time}'
         
 
 class Dose(models.Model):
