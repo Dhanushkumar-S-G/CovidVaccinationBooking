@@ -33,13 +33,24 @@
   <!-- Template Main CSS File -->
   <link href="{% static 'users/css/main.css' %}" rel="stylesheet">
 
+  <!-- select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <style>
+  #header{
+    padding: 15px 0 0 0; !important
+  }
+  </style>
+  {% block style %}
+  {% endblock %}
+
 </head>
 
 <body>
 
   <!-- ======= Header ======= -->
-  <header id="header" class="header fixed-top" data-scrollto-offset="0">
-    <div class="container-fluid d-flex align-items-center justify-content-between">
+  <header id="header" class="header fixed-top" data-scrollto-offset="0" style="position:static">
+    <div class="container-fluid d-flex align-items-center justify-content-between shadow-sm bg-white rounded">
 
       <a href="index.html" class="logo d-flex align-items-center scrollto me-auto me-lg-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
@@ -47,7 +58,7 @@
         <h1>Covid Vaccination<span>.</span></h1>
       </a>
 
-      <nav id="navbar" class="navbar">
+      <nav id="navbar" class="navbar" style="shadow:2px">
         <ul>
           <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
           <li><a class="nav-link scrollto" href="index.html#services">Services</a></li>

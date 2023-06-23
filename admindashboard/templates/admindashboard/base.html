@@ -33,6 +33,8 @@
 
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
@@ -180,6 +182,18 @@
           <li>
             <a href="{% url 'add-medicine' %}">
               <i class="bi bi-circle"></i><span>Add Medicine</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#components-nav4" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>Dose</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="components-nav4" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'add-dose' %}">
+              <i class="bi bi-circle"></i><span>Add Dose</span>
             </a>
           </li>
         </ul>

@@ -52,6 +52,7 @@ Slots - Creation
                     <td>{{ slot.from_time }}</td>
                     <td>{{ slot.to_time }}</td>
                     <td><a href="{% url 'edit-slot' slot.id %}"><i class="bx bxs-edit-alt"></i></a></td>
+                    <td><a href="{% url 'delete-slot' slot.id %}"><i style="color:red" class="ri-delete-bin-6-fill"></i></a></td>
                   </tr>
                 {% endfor %}
                 </tbody>

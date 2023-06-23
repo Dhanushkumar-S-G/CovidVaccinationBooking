@@ -10,6 +10,7 @@ from django.contrib import messages
 def dashboard(request):
     return render(request, "admindashboard/dashboard.html")
 
+
 #slot related
 @login_required
 @user_passes_test(is_admin)
@@ -53,6 +54,16 @@ def edit_slot(request,id):
     return render(request,'admindashboard/edit_slot.html',{
         'form':form
         })
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_slot(request,id):
+    slot = Slot.objects.get(id=id)
+    slot.delete()
+    messages.success(request, "Slot deleted successfully")
+    return redirect('add-slot')
+
 
 #location related
 @login_required
@@ -104,6 +115,16 @@ def edit_location(request,id):
         'locations':locations
     })
 
+
+@login_required
+@user_passes_test(is_admin)
+def delete_location(request,id):
+    location = Location.objects.get(id=id)
+    location.delete()
+    messages.success(request, "Location object deleted successfully..")
+    return redirect('add-location')
+
+
 #medicine related
 @login_required
 @user_passes_test(is_admin)
@@ -149,3 +170,68 @@ def edit_medicine(request,id):
     return render(request, "admindashboard/edit_medicine.html",{
         'form':form,
     })
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_medicine(request,id):
+    medicine = Medicine.objects.get(id=id)
+    medicine.delete()
+    messages.success(request, "Medicine object deleted successfully..")
+    return redirect('add-medicine')
+
+
+
+#dose related
+@login_required
+@user_passes_test(is_admin)
+def add_dose(request):
+    if request.method == "POST":
+        form = DoseForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Dose object created successfully..")
+            return redirect('add-dose')
+        else:
+            for field,errors in form.errors.items():
+                for error in errors:
+                    messages.error(request,f"Error in {field} : {error}")
+
+    form = DoseForm()
+    doses = Dose.objects.all()
+    return render(request, "admindashboard/add_dose.html",{
+        'form':form,
+        'doses':doses,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def edit_dose(request,id):
+    dose = Dose.objects.get(id=id)
+
+    if request.method == "POST":
+        form = DoseForm(request.POST,instance=dose)
+        if form.is_valid():
+            form.save()
+            messages.success(request,"Dose object updated Successfully..")
+            return redirect('add-dose')
+        else:
+            for field,errors in form.errors.items():
+                for error in errors:
+                    messages.error(request,f"Error in {field} : {error}")
+
+                    
+    form = DoseForm(instance=dose)
+    return render(request, "admindashboard/edit_dose.html",{
+        'form':form,
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_dose(request,id):
+    dose = Dose.objects.get(id=id)
+    dose.delete()
+    messages.success(request,"Dose object deleted")
+    return redirect('add-dose')

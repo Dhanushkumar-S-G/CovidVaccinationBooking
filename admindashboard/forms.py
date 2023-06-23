@@ -29,3 +29,9 @@ class MedicineForm(ModelForm):
     class Meta:
         model = Medicine
         fields = '__all__'
+
+
+class DoseForm(ModelForm):
+    class Meta:
+        model = Dose
+        fields = '__all__'

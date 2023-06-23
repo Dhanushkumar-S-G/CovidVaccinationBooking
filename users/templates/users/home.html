@@ -1,12 +1,20 @@
 {% extends 'users/base.html' %}
 {% load static %}
+{% block style%}
+<style>
+  #hero-static {
+    padding:60px !important;
+  }
+  
+</style>
+{% endblock%}
 {% block content %}
 <section id="hero-static" class="hero-static d-flex align-items-center">
     <div class="container d-flex flex-column justify-content-center align-items-center text-center position-relative" data-aos="zoom-out">
       <h2>Protect Yourself from  <span>Covid-19</span></h2>
       <p>A transformative shield unlocking safety, hope, and freedom. </p>
       <div class="d-flex">
-        <a href="#about" class="btn-get-started scrollto">Book Vaccination</a>
+        <a href="{% url 'book-vaccination' %}" class="btn-get-started scrollto">Book Vaccination</a>
         <a href="https://www.youtube.com/watch?v=MyYKlV7f-hg" class="glightbox btn-watch-video d-flex align-items-center"><i class="bi bi-play-circle"></i><span>Watch Video</span></a>
       </div>
     </div>

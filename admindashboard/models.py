@@ -38,17 +38,21 @@ class Dose(models.Model):
     name = models.CharField(max_length=10)
     prev = models.ForeignKey('self',related_name='next',on_delete=models.SET_NULL,null=True,blank=True)
 
+    def __str__(self) -> str:
+        return self.name
 
 class Appointment(models.Model):
 
     BOOKED = 1
     VACCINATED = 2
     CANCELED = 3
+    EXPIRED = 4
 
     APPOINTMENT_STATUS_CHOICES = (
         (BOOKED,'BOOKED'),
         (VACCINATED,'VACCINATED'),
-        (CANCELED, 'CANCELED')  
+        (CANCELED, 'CANCELED'),
+        (EXPIRED, 'EXPIRED')  
     )
 
     booked_by = models.ForeignKey(User,on_delete=models.PROTECT,related_name='related_bookings')
@@ -58,3 +62,5 @@ class Appointment(models.Model):
     booked_slot = models.ForeignKey(Slot,on_delete=models.SET_NULL,null=True)
     appointment_status = models.IntegerField(choices=APPOINTMENT_STATUS_CHOICES,default=1)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,related_name='related_appointments')
+    dose_booked_for = models.ForeignKey(Dose,on_delete=models.CASCADE,related_name='related_booked_appointments',null=True)
+

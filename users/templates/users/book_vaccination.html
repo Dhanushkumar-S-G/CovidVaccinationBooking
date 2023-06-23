@@ -1,0 +1,161 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block styles %}
+<style>
+
+</style>
+{% endblock%}
+{% block content %}
+<div class="container m-5" >
+    <div class="card shadow-sm p-3 mb-5 bg-white rounded php-email-form" >
+        <div class="card-body">
+            <h3 class="card-title">Book Vaccination</h3>
+            <br>
+
+            <form action="" method="post" id="form">
+            {% csrf_token %}
+                <div class="row" id="">
+                    <div class="col-md-6 form-group">
+                        <label for="v_name" >Vaccinator Name</label>
+                        <input id="v_name" name="v_name" type="text" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="v_aadhar_number" >Aadhar Number</label>
+                        <input id="v_aadhar_number" minlength="12" maxlength="12" name="v_aadhar_number" type="text" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="v_dob" >Vaccinator Date of Birth</label>
+                        <input id="v_dob" name="v_dob" type="date" class="form-control" required >
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="v_mobile" >Vaccinator Mobile Number</label>
+                        <input id="v_mobile" name="v_mobile" type="text" minlength="10" maxlength="10" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="v_gender" >Gender</label>
+                        <select id="v_gender" name="v_gender" class="form-select">
+                        <option value="1" >Male</option>
+                        <option value="2" >Female</option>
+                        <option value="3" >Others</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" name="pincode" onchange="getLocations()" class="form-control" id="pincode" required> 
+                    </div>
+                    <div class="col-md-6" id ="vaccinationcenter">
+
+                    </div>
+                </div>
+                <br>
+                <div class="row" id="slots">
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function getLocations(){
+        let pincode = document.getElementById("pincode");
+        let regex = new RegExp(/^\d{6}$/);
+        let vaccinationcenter = document.getElementById("vaccinationcenter");
+        vaccinationcenter.innerHTML = ``
+        if (!regex.test(pincode.value)){
+            alert("Enter a valid pincode number");
+        }
+        else{
+            let res = await fetch(`http://localhost:8000/api/get_locations/${pincode.value}`);
+            
+            if (res.status != 200){
+                alert("Cloud not fetch locations")
+            }
+            else{
+                res = await res.json();
+                console.log(res);
+                if (res.hasOwnProperty("success")){
+                    alert("No Vaccination Centers found in this area");
+                }
+                else{
+                    
+                    let locations = res.locations;
+                    let toBeAdded = `
+                    <label for="selectLocation">Select a Location</label>
+                    <select class="form-select" onchange="getSlot()" id="selectLocation" name="selectLocation" aria-label="Default select example">
+                        <option value="-----" selected disabled>-----</option>
+                    `
+                        
+                    for (i=0; i<locations.length; i++){
+                        toBeAdded += `<option value="${locations[i].id}">${locations[i].name}</option>`
+                    }
+                    toBeAdded += `</select>`
+
+                    vaccinationcenter.innerHTML = toBeAdded
+                }
+
+            }
+        }
+
+    }
+
+    async function getSlot(){
+        let location = document.getElementById("selectLocation");
+        let url = `http://localhost:8000/api/get_slots/${location.value}`
+        let res = await fetch(url)
+        
+
+        if (res.status != 200){
+            alert("Cloud not fetch sltos")
+        }
+        else{
+            res = await res.json();
+            console.log(res);
+            if (res.hasOwnProperty("success")){
+                alert("No slots found in this center");
+            }
+            else{
+                let slots = res.slots;
+                let slotRow = document.getElementById("slots"); 
+                
+                toBeAdded = `
+                <div class="col-md-12 form-group">
+                <label for="selectSlot">select a Slot</label>
+                <select class="form-select" name="selectSlot" id="selectSlot" >
+                <option value="-----" selected disabled>-----</option>
+                `
+
+                for(i=0; i<slots.length; i++){
+                    toBeAdded += `<option value="${slots[i].id}">${slots[i].name}    ${slots[i].from_time} - ${slots[i].to_time} </option>`
+                }
+
+                toBeAdded += `
+                </select>
+                <br>
+                
+                </div>
+                <div class="text-center">
+                    <button onclick="submitForm()"class="btn btn-primary">Book a Venue</button>
+                </div>
+                `
+                slotRow.innerHTML = toBeAdded
+            }
+        }
+    }
+
+    function submitForm(){
+        let form = document.getElementById("form");
+        let slot = document.getElementById("selectSlot");
+
+        if (slot.value == '-----'){
+            alert("Please select a slot")
+        }
+        else{
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

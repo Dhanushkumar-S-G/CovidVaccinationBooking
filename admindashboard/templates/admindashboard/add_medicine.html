@@ -36,6 +36,7 @@ Medicine - Creation
             <th scope="col">Medicine Name</th>
             <th scope="col">Produced By</th>
             <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
             </tr>
         </thead>    
         <tbody>
@@ -45,6 +46,7 @@ Medicine - Creation
             <td>{{ medicine.name }}</td>
             <td>{{ medicine.made_by }}</td>
             <td><a href="{% url 'edit-medicine' medicine.id %}"><i class="bx bxs-edit-alt"></i></a></td>
+            <td><a href="{% url 'delete-medicine' medicine.id %}"><i style="color:red" class="ri-delete-bin-6-fill"></i></a></td>
             </tr>
         {% endfor %}
         </tbody>

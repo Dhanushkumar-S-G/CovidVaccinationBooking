@@ -8,6 +8,7 @@ from admindashboard.permissions import is_admin
 def home(request):
     return render(request,"users/home.html")
 
+
 def signup(request):
     if request.method == "POST":
         user = None 
@@ -43,3 +44,9 @@ def signup(request):
 def user_logout(request):
     logout(request)
     return redirect('home-page')
+
+
+def book_vaccination(request):
+    if request.method == "POST":
+        print(request.POST.keys())
+    return render(request, "users/book_vaccination.html")

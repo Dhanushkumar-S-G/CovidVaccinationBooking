@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'social_django',
     'crispy_forms',
     'crispy_bootstrap4',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -183,3 +184,12 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 #timezone
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    
+}
