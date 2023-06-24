@@ -20,8 +20,8 @@
                         <input id="v_name" name="v_name" type="text" class="form-control" required>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="v_aadhar_number" >Aadhar Number</label>
-                        <input id="v_aadhar_number" minlength="12" maxlength="12" name="v_aadhar_number" type="text" class="form-control" required>
+                        <label for="v_aadhar_number" >Vaccinator Aadhar Number</label>
+                        <input id="v_aadhar_number" onchange="getDose()" minlength="12" maxlength="12" name="v_aadhar_number" type="text" class="form-control" required>
                     </div>
                     <div class="col-md-6 form-group">
                         <label for="v_dob" >Vaccinator Date of Birth</label>
@@ -40,11 +40,18 @@
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
+                        <label for="v_dose" >Dose </label>
+                        <input id="v_dose" disabled name="v_dose" class="form-control" type="text">
+                    </div>
+                    <div class="col-md-6 form-group">
                         <label for="pincode">Pincode</label>
                         <input type="text" name="pincode" onchange="getLocations()" class="form-control" id="pincode" required> 
                     </div>
                     <div class="col-md-6" id ="vaccinationcenter">
 
+                    </div>
+                    <div class="col-md-6" id="availabledates">
+                    
                     </div>
                 </div>
                 <br>
@@ -64,7 +71,14 @@
         let pincode = document.getElementById("pincode");
         let regex = new RegExp(/^\d{6}$/);
         let vaccinationcenter = document.getElementById("vaccinationcenter");
+        let availabledates = document.getElementById("availabledates");
+        let slots = document.getElementById("slots");
+
         vaccinationcenter.innerHTML = ``
+        availabledates.innerHTML = ''
+        slots.innerHTML = ''
+
+
         if (!regex.test(pincode.value)){
             alert("Enter a valid pincode number");
         }
@@ -85,7 +99,7 @@
                     let locations = res.locations;
                     let toBeAdded = `
                     <label for="selectLocation">Select a Location</label>
-                    <select class="form-select" onchange="getSlot()" id="selectLocation" name="selectLocation" aria-label="Default select example">
+                    <select class="form-select" onchange="getAvailableDate()" id="selectLocation" name="selectLocation" aria-label="Default select example">
                         <option value="-----" selected disabled>-----</option>
                     `
                         
@@ -104,7 +118,8 @@
 
     async function getSlot(){
         let location = document.getElementById("selectLocation");
-        let url = `http://localhost:8000/api/get_slots/${location.value}`
+        let date = document.getElementById("selectDate");
+        let url = `http://localhost:8000/api/get_slots/${location.value}/${date.value}`
         let res = await fetch(url)
         
 
@@ -124,7 +139,7 @@
                 toBeAdded = `
                 <div class="col-md-12 form-group">
                 <label for="selectSlot">select a Slot</label>
-                <select class="form-select" name="selectSlot" id="selectSlot" >
+                <select class="form-select" onchange="" name="selectSlot" id="selectSlot" >
                 <option value="-----" selected disabled>-----</option>
                 `
 
@@ -143,6 +158,72 @@
                 `
                 slotRow.innerHTML = toBeAdded
             }
+        }
+    }
+
+    
+
+    async function getDose(){
+        let aadhar_number = document.getElementById("v_aadhar_number")
+        let regex = new RegExp(/^\d{12}$/);
+        if (!regex.test(aadhar_number.value)){
+            alert("Enter a valid aadhar number");
+            return;
+        }
+        let url = `http://localhost:8000/api/get_dose/${aadhar_number.value}`
+
+        let res = await fetch(url)
+
+        if (res.status != 200){
+            alert("Could not fetch Dose details")
+        }
+        else {
+            res = await res.json()
+            if (res.hasOwnProperty("success")){
+                alert(res.success);
+            }
+            else{
+                let dose = res.dose
+                console.log(dose)
+                let doseElement = document.getElementById("v_dose")
+
+                doseElement.value = dose.name
+            }
+        }
+    
+    }
+
+    async function getAvailableDate(){
+        let location = document.getElementById("selectLocation");
+        let url = `http://localhost:8000/api/get_available_dates/${location.value}`
+
+        let res = await fetch(url)
+
+        if (res.status != 200){
+            alert("Cloud not fetch Available Dates")
+        }
+        else{
+            let availabledates = document.getElementById("availabledates");
+            res = await res.json()
+            appointments = res.appointments
+
+            toBeAdded = `
+            <label for="selectDate">select a Date</label>
+            <select class="form-select" onchange="getSlot()" name="selectDate" id="selectDate" >
+            <option value="-----" selected disabled>-----</option>
+            `
+
+            for(i=0; i<appointments.length; i++){
+                toBeAdded += `
+                <option value="${appointments[i][0]}">${appointments[i][0]} - ${appointments[i][1]}</option>
+                `
+            }
+
+            toBeAdded += `
+            </select>
+            `
+
+            availabledates.innerHTML = toBeAdded
         }
     }
 
