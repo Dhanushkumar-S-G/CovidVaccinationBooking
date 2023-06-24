@@ -53,8 +53,15 @@ def user_logout(request):
 
 @login_required
 def book_vaccination(request):
+
+    bookings = request.user.related_bookings
+    unique_bookings = set(bookings.values_list("booked_for",flat=True))
+    if (len(unique_bookings) >= 4):
+        messages.error(request,"Single user can book for maximum of 4 different unique users")
+        return redirect('view-booked')
+    
     if request.method == "POST":
-        'v_name', 'v_aadhar_number', 'v_dob', 'v_mobile', 'v_gender', 'pincode', 'selectLocation', 'selectDate', 'selectSlot'
+
         v_aadhar_number = request.POST.get('v_aadhar_number')
         v_name = request.POST.get('v_name')
         v_dob = request.POST.get('v_dob')
@@ -95,3 +102,15 @@ def book_vaccination(request):
                 appointment.save()
         messages.success(request, "Slot Booked Successfully..")
     return render(request, "users/book_vaccination.html")
+
+
+@login_required
+def view_booked(request):
+
+    bookings = request.user.related_bookings
+    unique_bookings = set(bookings.values_list("booked_for",flat=True))
+    booking_objs = [Vaccinator.objects.get(id=id) for id in unique_bookings]
+
+    return render(request, "users/view_booking.html",{
+        'bookings':booking_objs,
+    })

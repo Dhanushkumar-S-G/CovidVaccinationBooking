@@ -5,6 +5,7 @@ urlpatterns = [
     path('',home,name='home-page'),
     path('signup/',signup,name='signup'),
     path('logout/',user_logout,name='logout'),
-    path('book_vaccination/',book_vaccination,name='book-vaccination')
+    path('book_vaccination/',book_vaccination,name='book-vaccination'),
+    path('view_booked/',view_booked,name='view-booked')
     
 ]

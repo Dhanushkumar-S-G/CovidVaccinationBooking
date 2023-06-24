@@ -52,7 +52,7 @@
   <header id="header" class="header fixed-top" data-scrollto-offset="0" style="position:static">
     <div class="container-fluid d-flex align-items-center justify-content-between shadow-sm bg-white rounded">
 
-      <a href="index.html" class="logo d-flex align-items-center scrollto me-auto me-lg-0">
+      <a href="/" class="logo d-flex align-items-center scrollto me-auto me-lg-0">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>Covid Vaccination<span>.</span></h1>
@@ -60,8 +60,10 @@
 
       <nav id="navbar" class="navbar" style="shadow:2px">
         <ul>
-          <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
-          <li><a class="nav-link scrollto" href="index.html#services">Services</a></li>
+          {% if user.is_authenticated %}
+          <li><a class="nav-link scrollto" href="{% url 'book-vaccination' %}">Book Applications</a></li>
+          <li><a class="nav-link scrollto" href="{% url 'view-booked' %}">View Booked</a></li>
+          {% endif %}
           <li><a class="nav-link scrollto" href="index.html#portfolio">Portfolio</a></li>
           <li><a class="nav-link scrollto" href="index.html#team">Team</a></li>
           <li><a href="blog.html">Blog</a></li>
