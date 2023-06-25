@@ -3,14 +3,32 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from .permissions import is_admin
 from .forms import *
 from django.contrib import messages
-from datetime import datetime
+from datetime import datetime,timedelta
 
 
 @login_required
 @user_passes_test(is_admin)
 def dashboard(request):
-    
-    return render(request, "admindashboard/dashboard.html")
+    today = datetime.now().date()
+    labels = []
+    booked = []
+    visitied = []
+    for i in range(10,-1,-1):
+        current_date = today - timedelta(days=i)
+        labels.append(current_date.strftime("%d-%b"))
+
+        appointments = Appointment.objects.filter(appointment_date=current_date)
+        booked.append(appointments.count())
+
+        visitied_app = appointments.filter(appointment_status=Appointment.VACCINATED)
+        visitied.append(visitied_app.count())
+        
+    print(f"lables    {labels}")
+    return render(request, "admindashboard/dashboard.html",{
+        'labels':labels,
+        'booked':booked,
+        'visited':visitied
+    })
 
 
 #slot related
@@ -255,4 +273,5 @@ def update_appointment(request,id):
     appointment = Appointment.objects.get(id=id)
     appointment.appointment_status = Appointment.VACCINATED
     appointment.save()
+    messages.success(request, "Vaccinator details updated successfully..")
     return redirect('view-appointments')
