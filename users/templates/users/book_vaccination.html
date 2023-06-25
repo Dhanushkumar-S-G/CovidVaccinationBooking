@@ -87,7 +87,7 @@
             alert("Enter a valid pincode number");
         }
         else{
-            let res = await fetch(`http://localhost:8000/api/get_locations/${pincode.value}`);
+            let res = await fetch(`/api/get_locations/${pincode.value}`);
             
             if (res.status != 200){
                 alert("Cloud not fetch locations")
@@ -123,7 +123,7 @@
 
     async function availabeMedicines(){
         let location = document.getElementById("selectLocation");
-        let url = `http://localhost:8000/api/get_available_medicines/${location.value}`
+        let url = `/api/get_available_medicines/${location.value}`
 
         let res = await fetch(url)
 
@@ -159,7 +159,7 @@
     async function getSlot(){
         let location = document.getElementById("selectLocation");
         let date = document.getElementById("selectDate");
-        let url = `http://localhost:8000/api/get_slots/${location.value}/${date.value}`
+        let url = `/api/get_slots/${location.value}/${date.value}`
         let res = await fetch(url)
         
 
@@ -210,7 +210,7 @@
             alert("Enter a valid aadhar number");
             return;
         }
-        let url = `http://localhost:8000/api/get_dose/${aadhar_number.value}`
+        let url = `/api/get_dose/${aadhar_number.value}`
 
         let res = await fetch(url)
 
@@ -235,7 +235,7 @@
 
     async function getAvailableDate(){
         let location = document.getElementById("selectLocation");
-        let url = `http://localhost:8000/api/get_available_dates/${location.value}`
+        let url = `/api/get_available_dates/${location.value}`
 
         let res = await fetch(url)
 
