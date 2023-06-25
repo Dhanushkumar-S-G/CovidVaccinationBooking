@@ -9,21 +9,50 @@ Admin Dashboard
 
 {% block content %}
 <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Visited/Booked <small>(last 10 days)</small></h5> 
-
-              <!-- Line Chart -->
-              <canvas id="lineChart" style="max-height: 400px;"></canvas>
-              
-
-              <!-- End Line CHart -->
-
-            </div>
-          </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Visited/Booked <small>(last 10 days)</small></h5>
+            <canvas id="lineChart" style="max-height: 400px;"></canvas>
         </div>
-{% endblock %}  
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Total Stats</h5>
+            <canvas id="pieChart" style="max-height: 400px;"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
 {% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    new Chart(document.querySelector('#pieChart'), {
+    type: 'pie',
+    data: {
+        labels: [
+            'Booked',
+            'Vaccinated',
+            'Canceled',
+            'Expired'
+        ],
+        datasets: [{
+        label: 'Total Stats',
+        data: {{total_data}},
+        backgroundColor: [
+            'rgb(255, 99, 132)',
+            'rgb(54, 162, 235)',
+            'rgb(255, 205, 86)',
+            'rgb(153, 102, 255)',
+        ],
+        hoverOffset: 4
+        }]
+    }
+    });
+});
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const labels = {{labels|safe}};
