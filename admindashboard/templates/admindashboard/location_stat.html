@@ -1,0 +1,146 @@
+{% extends "admindashboard/base.html" %}
+{% load static %}
+
+
+{% block title %}
+Location Dashboard
+{% endblock %}
+
+
+{% block content %}
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Locations Stats</h5>
+            <select class="form-select" onchange="getStats()" name="location" id="location" aria-label="Default select example">
+                <option value="----"selected disabled>----</option>
+                {% for location in locations %}
+                <option value="{{location.id}}">{{location.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card" id="linecard" style="display:none">
+        
+    </div>
+</div>
+<div class="col-lg-12">
+    <div class="card" id="piecard" style="display:none" >
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function getStats(){
+        let locationSelection = document.getElementById("location");
+        url = `/api/get_location_stats/${locationSelection.value}`
+        let res = await fetch(url)
+        res = await res.json()
+        console.log(res)
+
+        let linecard = document.getElementById("linecard")
+        linecard.style.display = 'block'
+        linecard.innerHTML = `
+        <div class="card-body" >
+            <h5 class="card-title">Visited/Booked <small>(last 10 days)</small></h5>
+            <canvas id="lineChart" style="max-height: 400px;"></canvas>
+        </div>
+        `
+
+        let piecard = document.getElementById("piecard")
+        piecard.style.display = 'block'
+        piecard.innerHTML = `
+        <div class="card-body" >
+            <h5 class="card-title">Total Stats</h5>
+            <canvas id="pieChart" style="max-height: 400px;"></canvas>
+        </div>
+        `
+
+        new Chart(document.querySelector('#pieChart'), {
+        type: 'pie',
+        data: {
+            labels: [
+                'Booked',
+                'Vaccinated',
+                'Canceled',
+                'Expired'
+            ],
+            datasets: [{
+            label: 'Total Stats',
+            data: res.total_data,
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(153, 102, 255)',
+            ],
+            hoverOffset: 4
+            }]
+        }
+        });
+
+
+    let labels = res.labels;
+    let booked = res.booked;
+    let visited = res.visited;
+    let data = {
+        labels: labels,
+        datasets: [
+            {
+            label: 'Visited',
+            data: visited,
+            borderColor: 'rgb(255, 99, 132)',
+            fill: false,
+            cubicInterpolationMode: 'monotone',
+            tension: 0.4
+            }, {
+            label: 'Booked',
+            data: booked,
+            borderColor: 'rgb(54, 162, 235)',
+            fill: false,
+            tension: 0.4
+            },
+        ]
+    }
+    let config = {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+            title: {
+                display: true,
+                text: ''
+            },
+            },
+            interaction: {
+            intersect: false,
+            },
+            scales: {
+            x: {
+                display: true,
+                title: {
+                display: true
+                }
+            },
+            y: {
+                display: true,
+                title: {
+                display: true,
+                text: 'Value'
+                },
+               
+            }
+            }
+        },
+        };
+
+    new Chart(document.querySelector('#lineChart'),config)
+
+    }
+</script>
+{% endblock %}

@@ -13,6 +13,7 @@ urlpatterns = [
     path('add_location/',add_location,name='add-location'),
     path('edit_location/<int:id>',edit_location,name='edit-location'),
     path('delete_location/<int:id>/',delete_location,name='delete-location'),
+    path('location_stats/',location_stat,name='location-stats'),
 
     #medicines
     path('add_medicine/',add_medicine,name='add-medicine'),

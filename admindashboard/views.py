@@ -196,6 +196,19 @@ def delete_location(request,id):
         return redirect('admin-dashboard')
 
 
+@login_required
+@user_passes_test(is_admin)
+def location_stat(request):
+    try:
+        locations = Location.objects.all()
+        return render(request, "admindashboard/location_stat.html",{
+            'locations':locations
+        })
+    except Exception as e:
+        capture_exception(e)
+        messages.error(request, "An unknown error has occured")
+        return redirect('admin-dashboard')
+
 #medicine related
 @login_required
 @user_passes_test(is_admin)

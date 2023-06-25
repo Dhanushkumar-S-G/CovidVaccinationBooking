@@ -128,3 +128,45 @@ def get_available_medicines(request, id):
     except Exception as e:
         capture_exception(e)
         return JsonResponse({'error':'An unknown error has occured'})
+    
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) 
+def get_location_stats(request,id):
+    try:
+        location = Location.objects.get(id=id)
+
+        today = datetime.now().date()
+        labels = []
+        booked = []
+        visitied = []
+
+
+        for i in range(10,-1,-1):
+            current_date = today - timedelta(days=i)
+            labels.append(current_date.strftime("%d-%b"))
+
+            appointments = Appointment.objects.filter(appointment_date=current_date,location=location)
+            booked.append(appointments.count())
+
+            visitied_app = appointments.filter(appointment_status=Appointment.VACCINATED,location=location)
+            visitied.append(visitied_app.count())
+
+
+        total_booked = Appointment.objects.filter(appointment_status=Appointment.BOOKED,location=location).count()
+        total_vaccinated = Appointment.objects.filter(appointment_status=Appointment.VACCINATED,location=location).count()
+        total_canceled = Appointment.objects.filter(appointment_status=Appointment.CANCELED,location=location).count()
+        total_expired = Appointment.objects.filter(appointment_status=Appointment.EXPIRED,location=location).count()
+
+        total_data = [total_booked,total_vaccinated,total_canceled,total_expired]
+
+        data = {
+            'labels': labels,
+            'booked': booked,
+            'visited':visitied,
+            'total_data':total_data,
+        }
+        return JsonResponse(data=data)
+    except Exception as e:
+        capture_exception(e)
+        return JsonResponse({'error':'An unknown error has occured'})
