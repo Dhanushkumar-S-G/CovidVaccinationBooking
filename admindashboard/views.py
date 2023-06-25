@@ -3,11 +3,13 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from .permissions import is_admin
 from .forms import *
 from django.contrib import messages
+from datetime import datetime
 
 
 @login_required
 @user_passes_test(is_admin)
 def dashboard(request):
+    
     return render(request, "admindashboard/dashboard.html")
 
 
@@ -235,3 +237,22 @@ def delete_dose(request,id):
     dose.delete()
     messages.success(request,"Dose object deleted")
     return redirect('add-dose')
+
+
+#appointments related
+@login_required
+@user_passes_test(is_admin)
+def view_appointments(request):
+    appointments = Appointment.objects.filter(appointment_status=Appointment.BOOKED,appointment_date__gte = datetime.now().date())
+    return render (request, "admindashboard/view_appointments.html",{
+        'appointments' : appointments
+    })
+
+
+@login_required
+@user_passes_test(is_admin)
+def update_appointment(request,id):
+    appointment = Appointment.objects.get(id=id)
+    appointment.appointment_status = Appointment.VACCINATED
+    appointment.save()
+    return redirect('view-appointments')

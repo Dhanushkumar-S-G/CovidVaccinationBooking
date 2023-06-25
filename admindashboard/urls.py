@@ -24,4 +24,8 @@ urlpatterns = [
     path('add_doses/',add_dose,name='add-dose'),
     path('edit_doses/<int:id>/',edit_dose, name="edit-dose"),
     path('delete_doses/<int:id>/',delete_dose, name="delete-dose"),
+
+    #appointments
+    path('view_appointments/',view_appointments, name="view-appointments"),
+    path('update_appointment/<int:id>',update_appointment,name='update-appointment')
 ]

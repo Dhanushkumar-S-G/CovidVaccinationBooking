@@ -1,0 +1,59 @@
+{% extends "admindashboard/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+View Appointments
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Appointments</h5>
+
+        <!-- Table with stripped rows -->
+        <table class="table table-striped table-bordered m-3" id="appointments">
+        <thead>
+            <tr>
+            <th scope="col">Vaccinator Name</th>
+            <th scope="col">Vaccinator Aadhar</th>
+            <th scope="col">Appointment Date</th>
+            <th scope="col">Appointment Slot</th>
+            <th scope="col">Location</th>
+            <th scope="col">Dose</th>
+            <th scope="col">Medicine</th>
+            <th scope="col">Update Status</th>
+            </tr>
+        </thead>    
+        <tbody>
+        {% for appointment in appointments %}
+            <tr>
+            <td>{{ appointment.booked_for.name }}</td>
+            <td>{{ appointment.booked_for.aadhar_number }}</td>
+            <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.booked_slot }}</td>
+            <td>{{ appointment.location }}</td>
+            <td>{{ appointment.dose_booked_for }}</td>
+            <td>{{ appointment.medicine_booked }}</td>
+            <td><a href="{% url 'update-appointment' appointment.id %}"><button class="btn btn-success"> Vaccinated</button></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+        <!-- End Table with stripped rows -->
+
+    </div>
+</div>
+
+{% endblock %} 
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#appointments').DataTable();
+    });
+</script>
+{% endblock%}
