@@ -1,0 +1,49 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block styles %}
+{% load booking_tags %}
+<style>
+
+</style>
+{% endblock%}
+{% block content %}
+<div class="container m-5" >
+        {% if bookings%}
+         <div  class = "row">
+            {% for booking in bookings %}
+            <div class="col-5 card shadow-sm p-3  mb-5  bg-white rounded" >
+                <div class="card-body">
+                    <h3 class="card-title">{{booking.name}}</h3>
+                    <div class="row">
+                        <div class="col-6">
+                                Aadhar Number : {{booking.aadhar_number}}
+                        </div>
+                        <div class="col-6">
+                                Dob: {{booking.dob}}
+                        </div>
+                        <div class="col-6">
+                                Mobile Number : {{booking.mobile_number}}
+                        </div>
+                        <div class="col-6">
+                            Gender : {{booking.get_gender_display }}
+                        </div>
+                        <div class="col-6">
+                            Last Put Dose: {{booking.last_put_dose}}
+                        </div>
+                        <div class="col-6">
+                            <span style="color:red">Next Apppointment: {% get_active_bookings booking.id %}</span>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-1">
+            </div>
+            
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="text-center m-5 p-5" > <span style="color:red"> No bookings found </span></div>
+        {% endif %}
+</div>
+{% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth import logout, authenticate, login
 from admindashboard.permissions import is_admin
 from django.contrib.auth.decorators import login_required
 from .models import Vaccinator
-from admindashboard.models import Dose,Appointment,Slot,Location
+from admindashboard.models import Dose,Appointment,Slot,Location,Medicine
 from datetime import datetime
 from django.db.models import Q
 
@@ -95,11 +95,15 @@ def book_vaccination(request):
             appointment = Appointment.objects.create(booked_by=request.user,booked_for=vaccinator,appointment_date=date,booked_slot = appointment_slot,location=appointment_location)
             if vaccinator.last_put_dose:
                 appointment.dose_booked_for = vaccinator.last_put_dose.next.first()
-                appointment.save()
+                
             else:
                 dose = Dose.objects.filter(prev__isnull=True).first()
                 appointment.dose_booked_for = dose
-                appointment.save()
+
+            med_booked = request.POST.get("selectMedicine")
+            medicine = Medicine.objects.get(id=med_booked)
+            appointment.medicine_booked = medicine
+            appointment.save()
         messages.success(request, "Slot Booked Successfully..")
     return render(request, "users/book_vaccination.html")
 
@@ -111,6 +115,32 @@ def view_booked(request):
     unique_bookings = set(bookings.values_list("booked_for",flat=True))
     booking_objs = [Vaccinator.objects.get(id=id) for id in unique_bookings]
 
-    return render(request, "users/view_booking.html",{
+    return render(request, "users/view_booked.html",{
         'bookings':booking_objs,
     })
+
+
+@login_required
+def view_bookings(request):
+    bookings = request.user.related_bookings.all()
+    return render (request, "users/view_bookings.html",{
+        'bookings' : bookings,
+    })
+
+
+@login_required
+def cancel_bookings(request,id):
+    try:
+        appointment = Appointment.objects.get(id=id)
+        if appointment.booked_by == request.user:
+            appointment.appointment_status = Appointment.CANCELED
+            appointment.save()
+            messages.success(request, "Your bookings has been cancelled successfully..")
+            return redirect('view-booked')
+        
+        else:
+            messages.error(request, "You haven't booked this appointment")
+            return redirect('home-page')
+    except:
+        messages.error(request, "No Appointments found..")
+        return redirect('home-page')    

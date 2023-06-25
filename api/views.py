@@ -53,15 +53,27 @@ def get_dose(request,aadhar):
 
     if Vaccinator.objects.filter(aadhar_number=aadhar).exists():
         vaccinator = Vaccinator.objects.filter(aadhar_number = aadhar).first()
+
+        #checking for booked  appointment 
+        if Appointment.objects.filter(Q(booked_for=vaccinator) & Q(appointment_status=Appointment.BOOKED)).exists():
+            return JsonResponse({'error':f'Vaccinator already has an appointment booked'})
+        
         last_dose = vaccinator.last_put_dose
+
         if not last_dose:
             dose = Dose.objects.filter(prev__isnull=True).first()
             serialized_data = DoseSerializer(dose).data
+
         elif last_dose.next.first() == None:
-            return JsonResponse(status=200,data={'success':'Vaccinator took all doses'})
+            return JsonResponse(status=200,data={'error':'Vaccinator took all doses'})
+        
         else:
-            
             dose = last_dose.next.first()
+            last_appointment = Appointment.objects.filter(Q(booked_for=vaccinator)&Q(appointment_status=Appointment.VACCINATED)& Q(dose_booked_for=last_dose)).first()
+            last_app_date = last_appointment.appointment_date
+            if ((datetime.now().date() - last_app_date) < timedelta(days= last_dose.min_days_after_prev_dose)):
+                days_left = timedelta(days=last_dose.min_days_after_prev_dose) - (datetime.now().date() - last_app_date)
+                return JsonResponse({'error':f'still there are {days_left.days} left for next dose'})
             serialized_data = DoseSerializer(dose).data
 
     else:
@@ -86,3 +98,12 @@ def get_available_dates(request,id):
 
     return JsonResponse({'appointments': appointments})
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated]) 
+def get_available_medicines(request, id):
+    location = Location.objects.get(id=id)
+    print(location.regular_available_medicines.all())
+    meds = MedicineSerializer(location.regular_available_medicines.all(),many=True).data
+    return JsonResponse({'medicines':meds})

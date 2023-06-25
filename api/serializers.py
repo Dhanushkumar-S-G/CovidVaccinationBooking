@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from admindashboard.models import Location,Slot,Dose
+from admindashboard.models import Location,Slot,Dose,Medicine
 
 
 class FindLocationSerializer(serializers.ModelSerializer):
@@ -19,3 +19,8 @@ class DoseSerializer(serializers.ModelSerializer):
         model = Dose
         fields = ['name']
 
+
+class MedicineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Medicine
+        fields = ['name','id']

@@ -36,7 +36,9 @@ class Slot(models.Model):
 
 class Dose(models.Model):
     name = models.CharField(max_length=10)
+    min_days_after_prev_dose = models.IntegerField(default=90)
     prev = models.ForeignKey('self',related_name='next',on_delete=models.SET_NULL,null=True,blank=True)
+
 
     def __str__(self) -> str:
         return self.name
@@ -63,4 +65,4 @@ class Appointment(models.Model):
     appointment_status = models.IntegerField(choices=APPOINTMENT_STATUS_CHOICES,default=1)
     location = models.ForeignKey(Location,on_delete=models.CASCADE,related_name='related_appointments')
     dose_booked_for = models.ForeignKey(Dose,on_delete=models.CASCADE,related_name='related_booked_appointments',null=True)
-
+    medicine_booked = models.ForeignKey(Medicine,on_delete=models.SET_NULL,related_name='related_bookings',null=True)

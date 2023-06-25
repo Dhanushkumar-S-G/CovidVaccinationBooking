@@ -1,0 +1,58 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block styles %}
+{% load booking_tags %}
+<style>
+
+</style>
+{% endblock%}
+{% block content %}
+<div class="container m-5" >
+    {% if bookings %}
+        <div  class = "row">
+            {% for booking in bookings %}
+            <div class="col-12 card shadow-sm p-3 mb-5 bg-white rounded php-email-form" >
+                <div class="card-body">
+                    <h3 class="card-title">{{booking.booked_for.name}}</h3>
+                    <div class="row">
+                        <div class="col-6">
+                                Aadhar Number : {{booking.booked_for.aadhar_number}}
+                        </div>
+                        <div class="col-6">
+                                Dob: {{booking.booked_for.dob}}
+                        </div>
+                        <div class="col-6">
+                                Mobile Number : {{booking.booked_for.mobile_number}}
+                        </div>
+                        <div class="col-6">
+                            Gender : {{booking.booked_for.get_gender_display }}
+                        </div>
+                        <div class="col-6">
+                            Dose Booked : {{booking.dose_booked_for }}
+                        </div>
+                        <div class="col-6">
+                            Appointment Date : {{booking.appointment_date }}
+                        </div>
+                        <div class="col-6">
+                            Booked Slot : {{booking.booked_slot }}
+                        </div>
+                        <div class="col-6">
+                            Appointment Status : {{ booking.get_appointment_status_display }}
+                        </div>
+                    </div>
+
+                    {% if booking.appointment_status == 1 %}
+
+                    <div class="">
+                        <a href="{% url 'cancel-bookings' booking.id %}"  ><button class="btn btn-danger">Cancel </button></a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center m-5 p-5" > <span style="color:red"> No bookings found </span></div>
+    {% endif %}
+</div>
+{% endblock %}
